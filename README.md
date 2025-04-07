@@ -1,0 +1,1 @@
+Adapter file from: https://github.com/timflutre/trimmomatic/blob/master/adapters/TruSeq3-PE.fa
