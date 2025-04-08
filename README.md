@@ -36,6 +36,8 @@ environment in AWS ECS, which is managed by AWS Batch. Results are written to
 
 ## Destroy infrastructure
 In order to avoid unnecessary costs, remember to destroy the AWS resources when the pipeline 
-is finished running. Enter the `terraform/` directory and run
-```terraform destroy```. 
+is finished running. Enter the `terraform/` directory and run:
+```
+terraform destroy
+``` 
 When promted enter `yes`. This will destroy all AWS resources that were provisioned earlier.
