@@ -3,3 +3,4 @@ work/
 .nf-core.yml
 .env
 .devcontainer
+terraform/.terraform
