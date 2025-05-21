@@ -44,9 +44,31 @@ workflow {
     read_pairs_ch = Channel
         .fromFilePairs(params.reads, checkIfExists: true)
         .map { tuple(it[0], it[1]) }
+    //read_pairs_ch.view { it }
+
+    // Create input channel from the contents of a CSV file
+    read_ch = Channel.fromPath("input.csv")
+        .splitCsv(header:true)
+        .map { row -> file(row.fastq_path) }
+    //read_ch.view { it }
+
+    read_ch_2 = Channel.fromPath("input.csv")        
+        .splitCsv(header:true)    
+        .map { row ->
+            def meta = [id: row.sample_id, single_end: true]
+            def fastq_path = file(row.fastq_path)
+            [row.sample_id, fastq_path]
+            tuple(meta, fastq_path)
+
+        }
+    
+    read_ch_2.view { it }
+
+    read_pairs_ch.map { sample_id, files -> [[id:sample_id], files]}.view { it }
 
     // Trimmomatic
-    TRIMMOMATIC(read_pairs_ch.map { sample_id, files -> [[id:sample_id], files]}, file(params.adapter_file))
+    //TRIMMOMATIC(read_pairs_ch.map { sample_id, files -> [[id:sample_id], files]}) //file(params.adapter_file))
+    TRIMMOMATIC(read_ch_2)
     //DECOMPRESS(TRIMMOMATIC.out.trimmed_reads)
 
     // STAR alignment

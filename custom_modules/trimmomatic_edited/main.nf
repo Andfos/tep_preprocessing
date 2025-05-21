@@ -9,6 +9,7 @@ process TRIMMOMATIC {
 
     input:
     tuple val(meta), path(reads)
+    //val(adapter_file)
 
     output:
     tuple val(meta), path("*.paired.trim*.fastq.gz")   , emit: trimmed_reads
@@ -32,12 +33,14 @@ process TRIMMOMATIC {
     """
     trimmomatic \\
         $trimmed \\
+        -phred33 \\
         -threads $task.cpus \\
         -trimlog ${prefix}_trim.log \\
         -summary ${prefix}.summary \\
         $reads \\
         $output \\
         $qual_trim \\
+        ILLUMINACLIP:/opt/conda/pkgs/trimmomatic-0.39-hdfd78af_2/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36 \\
         $args 2> >(tee ${prefix}_out.log >&2)
 
     cat <<-END_VERSIONS > versions.yml
